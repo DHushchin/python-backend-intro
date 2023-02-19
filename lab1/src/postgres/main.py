@@ -9,7 +9,7 @@ sys.path.append(parent)
 
 from config import Config
 
-# Create a table
+
 def create_table():
     cur = conn.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS planes
@@ -22,7 +22,7 @@ def create_table():
     print("Table created successfully")
     cur.close()
 
-# Insert data into the table
+
 def insert_data(id, name, type_plane, start_date, operation_date):
     cur = conn.cursor()
     cur.execute("INSERT INTO planes (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (%s, %s, %s, %s, %s)", (id, name, type_plane, start_date, operation_date))
@@ -30,7 +30,7 @@ def insert_data(id, name, type_plane, start_date, operation_date):
     print("Data inserted successfully")
     cur.close()
 
-# Retrieve data from the table
+
 def select_data():
     cur = conn.cursor()
     cur.execute("SELECT * FROM planes")
@@ -43,7 +43,7 @@ def select_data():
         print("OPERATION_DATE = ", row[4], "\n")
     cur.close()
 
-# Update data in the table
+
 def update_data(id, name, type_plane, start_date, operation_date):
     cur = conn.cursor()
     cur.execute("UPDATE planes SET NAME = %s, TYPE_PLANE = %s, START_DATE = %s, OPERATION_DATE = %s WHERE ID = %s", (name, type_plane, start_date, operation_date, id))
@@ -51,7 +51,7 @@ def update_data(id, name, type_plane, start_date, operation_date):
     print("Data updated successfully")
     cur.close()
 
-# Delete data from the table
+
 def delete_data(id):
     cur = conn.cursor()
     cur.execute("DELETE FROM planes WHERE ID = %s", (id,))
@@ -62,7 +62,6 @@ def delete_data(id):
      
 cfg = Config()
 
-# Establish a connection to the PostgreSQL database
 conn = psycopg2.connect(
     host=cfg.POSTGRES_HOST,
     user=cfg.POSTGRES_USER,
@@ -72,17 +71,7 @@ conn = psycopg2.connect(
 )
 
 cur = conn.cursor()
-print("Database connected successfully")
-
-# Check if the database exists
-cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'db_planes'")
-exists = cur.fetchone()
-
-# If the database doesn't exist, create it
-if not exists:
-    cur.execute("CREATE DATABASE db_planes") 
     
 create_table()
 
-# Close the database connection
 conn.close()
