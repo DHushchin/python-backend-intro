@@ -1,16 +1,13 @@
 import psycopg2
 
-# Establish a connection to the PostgreSQL database
-conn = psycopg2.connect(database="db_planes", user="myuser", password="mypassword", host="localhost", port="5432")
-print("Database connected successfully")
+import os
+import sys
 
-# Check if the database exists
-cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'db_planes'")
-exists = cur.fetchone()
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(os.path.dirname(current))
+sys.path.append(parent)
 
-# If the database doesn't exist, create it
-if not exists:
-    cur.execute("CREATE DATABASE db_planes")
+from config import Config
 
 # Create a table
 def create_table():
@@ -61,6 +58,31 @@ def delete_data(id):
     conn.commit()
     print("Data deleted successfully")
     cur.close()
+    
+     
+cfg = Config()
+
+# Establish a connection to the PostgreSQL database
+conn = psycopg2.connect(
+    host=cfg.POSTGRES_HOST,
+    user=cfg.POSTGRES_USER,
+    password=cfg.POSTGRES_PASSWORD,
+    database=cfg.POSTGRES_DATABASE,
+    port=cfg.POSTGRES_PORT
+)
+
+cur = conn.cursor()
+print("Database connected successfully")
+
+# Check if the database exists
+cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = 'db_planes'")
+exists = cur.fetchone()
+
+# If the database doesn't exist, create it
+if not exists:
+    cur.execute("CREATE DATABASE db_planes") 
+    
+create_table()
 
 # Close the database connection
 conn.close()
