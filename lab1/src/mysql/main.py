@@ -1,11 +1,23 @@
-import mysql.connector
+from mysql import connector
+
+import os
+import sys
+
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(os.path.dirname(current))
+sys.path.append(parent)
+
+from config import Config
+
+cfg = Config()
 
 # establish connection
-cnx = mysql.connector.connect(
-  host="localhost",
-  user="username",
-  password="password",
-  database="db_planes"
+cnx = connector.connect(
+    host=cfg.MYSQL_HOST,
+    user=cfg.MYSQL_USER,
+    password=cfg.MYSQL_PASSWORD,
+    database=cfg.MYSQL_DATABASE,
+    port=cfg.MYSQL_PORT
 )
 
 # create cursor
