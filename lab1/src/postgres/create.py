@@ -20,9 +20,10 @@ conn = psycopg2.connect(
 conn.autocommit = True
 
 DB_NAME = cfg.POSTGRES_DATABASE
-    
+
 with conn.cursor() as cur:
-    cur.execute(f"CREATE DATABASE {DB_NAME}")
+    if cur.execute(f"SELECT 1 FROM pg_database WHERE datname = '{DB_NAME}'") == 0:
+        cur.execute(f"CREATE DATABASE {DB_NAME}")
 
 cur.close()
 conn.close()
