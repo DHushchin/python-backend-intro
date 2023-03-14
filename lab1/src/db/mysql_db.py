@@ -1,4 +1,4 @@
-from mysql import connector
+# from mysql import connector
 
 import os
 import sys
@@ -7,31 +7,36 @@ current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(os.path.dirname(current))
 sys.path.append(parent)
 
+from base_db import BaseDB
 from config import Config
 
 cfg = Config()
 
 
-class MySQL:   
+class MySQLDB(BaseDB):
     def __init__(self):
-        self.conn = connector.connect(
-            host=cfg.MYSQL_HOST,
-            user=cfg.MYSQL_USER,
-            password=cfg.MYSQL_PASSWORD,
-        )
-        
-        self.conn.autocommit(True)
-        self.create_db()
+        super().__init__(cfg.MYSQL_DATABASE)
+        self.connect()
         self.create_table()
-        
+        self.close()
+
+    def connect(self):
+        pass
+        # self.conn = connector.connect(
+        #     host=cfg.MYSQL_HOST,
+        #     user=cfg.MYSQL_USER,
+        #     password=cfg.MYSQL_PASSWORD,
+        # )
+        # self.conn.autocommit = True # self.conn.autocommit(True)
+        # self.cursor = self.conn.cursor()
+        # self.create_db()
         
     def create_db(self):
         cursor =  self.cnx.cursor()
         DB_NAME = cfg.MYSQL_DATABASE
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
         # self.cnx.commit()
-        cursor.close()
-                
+        cursor.close()          
                 
     def create_table(self):
         cursor =  self.cnx.cursor()

@@ -1,8 +1,16 @@
 import sqlite3
+from base_db import BaseDB
 
-class SQLLite:
+class SQLiteDB(BaseDB):
     def __init__(self, db_name):
         self.db_name = db_name
+        self.conn = None
+        self.cursor = None
+        self.connect()
+        self.create_table()
+        self.disconnect()
+
+    def connect(self):
         self.conn = sqlite3.connect(self.db_name)
         self.cursor = self.conn.cursor()
 
@@ -24,6 +32,6 @@ class SQLLite:
                 '''INSERT INTO planes (id, name, type_plane, start_date, operation_date) VALUES (?, ?, ?, ?, ?)''', data
             )
             
-    def close(self):
+    def disconnect(self):
         self.conn.close()
         
