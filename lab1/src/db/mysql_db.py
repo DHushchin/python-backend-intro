@@ -21,25 +21,22 @@ class MySQLDB(BaseDB):
         self.close()
 
     def connect(self):
-        pass
-        # self.conn = connector.connect(
-        #     host=cfg.MYSQL_HOST,
-        #     user=cfg.MYSQL_USER,
-        #     password=cfg.MYSQL_PASSWORD,
-        # )
-        # self.conn.autocommit = True # self.conn.autocommit(True)
-        # self.cursor = self.conn.cursor()
-        # self.create_db()
+        self.conn = connector.connect(
+            host=cfg.MYSQL_HOST,
+            user=cfg.MYSQL_USER,
+            password=cfg.MYSQL_PASSWORD,
+        )
+        self.conn.autocommit = True # self.conn.autocommit(True)
+        self.create_db()
         
     def create_db(self):
-        cursor =  self.cnx.cursor()
+        cursor =  self.conn.cursor()
         DB_NAME = cfg.MYSQL_DATABASE
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-        # self.cnx.commit()
         cursor.close()          
                 
     def create_table(self):
-        cursor =  self.cnx.cursor()
+        cursor =  self.conn.cursor()
     
         create_table_query = """
         CREATE TABLE {} (
@@ -52,9 +49,8 @@ class MySQLDB(BaseDB):
         )
         """.format('planes')
         cursor.execute(create_table_query)
-        # self.cnx.commit()
         cursor.close()
         
     def close(self):
-        self.cnx.close()
+        self.conn.close()
     

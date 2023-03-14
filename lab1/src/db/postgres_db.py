@@ -21,16 +21,15 @@ class PostgresDB(BaseDB):
         self.close()
 
     def connect(self):
-        pass
-        # self.conn = psycopg2.connect(
-        #     host=cfg.POSTGRES_HOST, 
-        #     user=cfg.POSTGRES_USER, 
-        #     password=cfg.POSTGRES_PASSWORD,
-        #     port=cfg.POSTGRES_PORT
-        # )
-        # self.conn.autocommit = True
-        # self.cursor = self.conn.cursor()
-        # self.create_db()
+        self.conn = psycopg2.connect(
+            host=cfg.POSTGRES_HOST, 
+            user=cfg.POSTGRES_USER, 
+            password=cfg.POSTGRES_PASSWORD,
+            port=cfg.POSTGRES_PORT
+        )
+        self.conn.autocommit = True
+        self.cursor = self.conn.cursor()
+        self.create_db()
              
     def create_db(self):
         with self.conn.cursor() as cur:
@@ -46,14 +45,12 @@ class PostgresDB(BaseDB):
                     start_date DATE NOT NULL,
                     operation_date DATE NOT NULL);''')
         
-        # self.conn.commit()
         print("Table created successfully")
         cur.close()
 
     def insert_data(self, id, name, type_plane, start_date, operation_date):
         cur = self.conn.cursor()
         cur.execute(f"INSERT INTO planes (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES {(id, name, type_plane, start_date, operation_date)}")
-        # self.conn.commit()
         print("Data inserted successfully")
         cur.close()
 
@@ -73,14 +70,12 @@ class PostgresDB(BaseDB):
     def update_data(self, id, name, type_plane, start_date, operation_date):
         cur = self.conn.cursor()
         cur.execute(f"UPDATE planes SET NAME = {name}, TYPE_PLANE = {type_plane}, START_DATE = {start_date}, OPERATION_DATE = {operation_date} WHERE ID = {id}")
-        # self.conn.commit()
         print("Data updated successfully")
         cur.close()
 
     def delete_data(self, id):
         cur = self.conn.cursor()
         cur.execute(f"DELETE FROM planes WHERE ID = {id}")
-        # self.conn.commit()
         print("Data deleted successfully")
         cur.close() 
         
