@@ -1,56 +1,78 @@
-# from mysql import connector
-
-import os
-import sys
-
-current = os.path.dirname(os.path.realpath(__file__))
-parent = os.path.dirname(os.path.dirname(current))
-sys.path.append(parent)
-
-from base_db import BaseDB
-from config import Config
-
-cfg = Config()
+from mysql import connector
+from db.base_db import BaseDB
 
 
 class MySQLDB(BaseDB):
     def __init__(self):
-        super().__init__(cfg.MYSQL_DATABASE)
+        super().__init__()
         self.connect()
         self.create_table()
-        self.close()
+
 
     def connect(self):
         self.conn = connector.connect(
-            host=cfg.MYSQL_HOST,
-            user=cfg.MYSQL_USER,
-            password=cfg.MYSQL_PASSWORD,
+            host=self.cfg.MYSQL_HOST,
+            user=self.cfg.MYSQL_USER,
+            password=self.cfg.MYSQL_PASSWORD,
+            port = self.cfg.MYSQL_PORT
         )
-        self.conn.autocommit = True # self.conn.autocommit(True)
+        self.conn.autocommit = True
+        self.conn._buffered = True
         self.create_db()
-        
+              
+              
     def create_db(self):
-        cursor =  self.conn.cursor()
-        DB_NAME = cfg.MYSQL_DATABASE
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-        cursor.close()          
-                
+        cursor = self.conn.cursor()
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.cfg.MYSQL_DATABASE}")
+        cursor.close()   
+        print("MySQL: Database created successfully")       
+            
+                        
     def create_table(self):
-        cursor =  self.conn.cursor()
+        cursor = self.conn.cursor()
     
         create_table_query = """
-        CREATE TABLE {} (
-        id INT(11) NOT NULL AUTO_INCREMENT,
-        name VARCHAR(255) NOT NULL,
-        type_plane VARCHAR(255) NOT NULL,
-        start_date DATE NOT NULL,
-        operation_date DATE NOT NULL,
-        PRIMARY KEY (id)
+        CREATE TABLE IF NOT EXISTS {} 
+        (
+            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            type_plane VARCHAR(255) NOT NULL,
+            start_date DATE NOT NULL,
+            operation_date DATE NOT NULL
         )
-        """.format('planes')
+        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
         cursor.execute(create_table_query)
-        cursor.close()
+        cursor.close()       
+        print("MySQL: Table created successfully")
         
-    def close(self):
-        self.conn.close()
+        
+    def select_all(self):
+        select_all_query = """
+            SELECT * FROM {}
+        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        cursor = self.conn.cursor()
+        cursor.execute(select_all_query)
+        rows = cursor.fetchall() 
+        cursor.close()    
+        return rows
+        
+        
+    def insert(self, data):
+        cursor = self.conn.cursor()
+        insert_query = """
+            INSERT INTO {} (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (%s, %s, %s, %s, %s)
+        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        cursor.execute(insert_query, data)
+        cursor.close()
+        print("MySQL: Data inserted successfully")
+                   
+        
+    def get_columns(self):
+        cursor = self.conn.cursor()
+        cursor.execute(f"SELECT * FROM {self.cfg.MYSQL_DATABASE}.planes")
+        return [description[0] for description in cursor.description]
+        
+        
+    def __del__(self):
+        self.conn.close() 
     

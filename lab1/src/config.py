@@ -7,6 +7,7 @@ class Config:
     def __init__(self):
         self.mysql_config()
         self.postgres_config()
+        self.sqlite_config()
     
     def mysql_config(self):
         self.MYSQL_HOST = os.environ.get('MYSQL_HOST')
@@ -21,3 +22,6 @@ class Config:
         self.POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
         self.POSTGRES_DATABASE = os.environ.get('POSTGRES_DATABASE')
         self.POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
+        
+    def sqlite_config(self):
+        self.SQLITE_DATABASE = os.environ.get('SQLITE_DATABASE')

@@ -1,21 +1,21 @@
 import sqlite3
-from base_db import BaseDB
+from db.base_db import BaseDB
+
 
 class SQLiteDB(BaseDB):
-    def __init__(self, db_name):
-        self.db_name = db_name
-        self.conn = None
-        self.cursor = None
+    def __init__(self):
+        super().__init__()
         self.connect()
         self.create_table()
-        self.disconnect()
+        
 
     def connect(self):
-        self.conn = sqlite3.connect(self.db_name)
+        self.conn = sqlite3.connect(self.cfg.SQLITE_DATABASE)
         self.cursor = self.conn.cursor()
 
+
     def create_table(self):
-        with  self.conn:
+        with self.conn:
              self.conn.execute(
                 '''CREATE TABLE IF NOT EXISTS planes (
                     id INTEGER PRIMARY KEY,
@@ -23,15 +23,31 @@ class SQLiteDB(BaseDB):
                     type_plane TEXT NOT NULL,
                     start_date DATE NOT NULL,
                     operation_date DATE NOT NULL
-                )'''
-            )
+                )''')  
+             
+        print("SQLite: Table created successfully")   
+        
             
-    def insert_data(self, data):
+    def insert(self, data):
         with self.conn:
-            self.conn.execute(
-                '''INSERT INTO planes (id, name, type_plane, start_date, operation_date) VALUES (?, ?, ?, ?, ?)''', data
-            )
+            self.conn.execute('INSERT INTO planes (id, name, type_plane, start_date, operation_date) VALUES (?, ?, ?, ?, ?)', data)  
+           
             
-    def disconnect(self):
-        self.conn.close()
+    def select_all(self):
+        with self.conn:
+            rows = self.conn.execute("SELECT * FROM planes").fetchall() 
+              
+        return rows      
+                 
+        
+    def get_columns(self):
+        with self.conn:
+            cursor = self.conn.execute(f"SELECT * FROM planes")
+            names = [description[0] for description in cursor.description]
+            
+        return names
+        
+        
+    def __del__(self):
+        self.conn.close() 
         
