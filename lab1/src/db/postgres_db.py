@@ -24,13 +24,13 @@ class PostgresDB(BaseDB):
         with self.conn.cursor() as cur:
             if cur.execute(f"SELECT 1 FROM pg_database WHERE datname = '{self.cfg.POSTGRES_DATABASE}'") == 0:
                 cur.execute(f"CREATE DATABASE {self.cfg.POSTGRES_DATABASE}") 
-        print("Postgres: Database created successfully")      
+            print("Postgres: Database created successfully")      
           
                             
     def create_table(self):
         cur = self.conn.cursor()
         cur.execute('''CREATE TABLE IF NOT EXISTS planes
-                    (id serial PRIMARY KEY,
+                    (id INT PRIMARY KEY NOT NULL,
                     name TEXT NOT NULL,
                     type_plane TEXT NOT NULL,
                     start_date DATE NOT NULL,
@@ -49,7 +49,7 @@ class PostgresDB(BaseDB):
 
     def insert(self, data):
         cur = self.conn.cursor()
-        cur.execute("INSERT INTO planes (id, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (DEFAULT, %s, %s, %s, %s)", data)
+        cur.execute("INSERT INTO planes (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (%s, %s, %s, %s, %s)", data)
         cur.close()
         print("Postgres: Data inserted successfully")
 

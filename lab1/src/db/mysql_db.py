@@ -34,7 +34,7 @@ class MySQLDB(BaseDB):
         create_table_query = """
         CREATE TABLE IF NOT EXISTS {} 
         (
-            id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+            id INT PRIMARY KEY NOT NULL,
             name VARCHAR(255) NOT NULL,
             type_plane VARCHAR(255) NOT NULL,
             start_date DATE NOT NULL,
@@ -47,9 +47,9 @@ class MySQLDB(BaseDB):
         
         
     def select_all(self):
-        select_all_query = """
-            SELECT * FROM {}
-        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        select_all_query =  """
+                                SELECT * FROM {}
+                            """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
         cursor = self.conn.cursor()
         cursor.execute(select_all_query)
         rows = cursor.fetchall() 
@@ -59,12 +59,33 @@ class MySQLDB(BaseDB):
         
     def insert(self, data):
         cursor = self.conn.cursor()
-        insert_query = """
-            INSERT INTO {} (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (%s, %s, %s, %s, %s)
-        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        insert_query =  """
+                            INSERT INTO {} (ID, NAME, TYPE_PLANE, START_DATE, OPERATION_DATE) VALUES (%s, %s, %s, %s, %s)
+                        """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
         cursor.execute(insert_query, data)
         cursor.close()
         print("MySQL: Data inserted successfully")
+       
+        
+    def truncate(self):
+        cursor = self.conn.cursor()
+        truncate_query = """
+                             TRUNCATE TABLE {}
+                         """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        cursor.execute(truncate_query)
+        cursor.close()
+        print("MySQL: Table truncated successfully")
+        
+        
+    def export_query(self):
+        cursor = self.conn.cursor()
+        query = """
+                    SELECT id + 1, upper(name), upper(type_plane) FROM {}
+                """.format(f'{self.cfg.MYSQL_DATABASE}.planes')
+        cursor.execute(query)
+        rows = cursor.fetchall()
+        cursor.close()
+        return rows
                    
         
     def get_columns(self):

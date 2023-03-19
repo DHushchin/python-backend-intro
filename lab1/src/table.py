@@ -26,12 +26,15 @@ class Table:
 
         # Adding table to window
         self.tree.grid(row=0, column=0, columnspan=3, padx=0, pady=0)
-                 
+        
+        # Getting data from database
+        self.get_data() 
+         
                        
     def __crud_gui(self):
         # Creating entry fields
         self.data_entry = []
-        for i, column in enumerate(self.db.get_columns()[1:]):
+        for i, column in enumerate(self.db.get_columns()):
             Label(self.parent, text=column.title()).grid(row=i+1, column=0, padx=10, pady=5, sticky="e")
             setattr(self, f"{column}_var", StringVar())
             self.data_entry.append(getattr(self, f"{column}_var"))
@@ -42,14 +45,14 @@ class Table:
         Button(self.parent, text="Add", command=self.add).grid(row=1, column=2, padx=10, pady=5, sticky="nsew")
         Button(self.parent, text="Update", command=self.update).grid(row=2, column=2, padx=10, pady=5, sticky="nsew")
         Button(self.parent, text="Delete", command=self.delete).grid(row=3, column=2, padx=10, pady=5, sticky="nsew")
-        self.get_data()
         
         
     def get_data(self):
         data = self.db.select_all()
         if data:
-            for row in data[1:]:
+            for row in data:
                 self.tree.insert("", "end", values=row)
+
 
     def add(self):
         data = [var.get() for var in self.data_entry]
@@ -57,11 +60,13 @@ class Table:
         self.tree.insert("", "end", values=data)
         self.clear_entry()
 
+
     def update(self):
         data = [var.get() for var in self.data_entry]
         self.db.update(data)
         self.refresh()
         self.clear_entry()
+  
   
     def delete(self):
         selected = self.tree.selection()
@@ -70,13 +75,13 @@ class Table:
             self.tree.delete(item)
             self.db.delete(_id)
             
+            
     def refresh(self):
         for i in self.tree.get_children():
             self.tree.delete(i)
         self.get_data()
+     
         
     def clear_entry(self):
         for var in self.data_entry:
             var.set("")
-
-

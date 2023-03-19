@@ -33,13 +33,18 @@ class MainApplication:
         
     def export_to_table2(self):
         data = self.table1.db.select_all()
+        self.table2.db.truncate()
         for row in data:
             self.table2.db.insert(row)
         self.table2.refresh()
 
     
     def export_to_table3(self):
-        pass
+        data = self.table2.db.export_query()
+        self.table3.db.truncate()
+        for row in data:
+            self.table3.db.insert(row)
+        self.table3.refresh()
 
 
 if __name__ == "__main__":

@@ -20,9 +20,7 @@ class SQLiteDB(BaseDB):
                 '''CREATE TABLE IF NOT EXISTS planes (
                     id INTEGER PRIMARY KEY,
                     name TEXT NOT NULL,
-                    type_plane TEXT NOT NULL,
-                    start_date DATE NOT NULL,
-                    operation_date DATE NOT NULL
+                    type_plane TEXT NOT NULL
                 )''')  
              
         print("SQLite: Table created successfully")   
@@ -30,15 +28,20 @@ class SQLiteDB(BaseDB):
             
     def insert(self, data):
         with self.conn:
-            self.conn.execute('INSERT INTO planes (id, name, type_plane, start_date, operation_date) VALUES (?, ?, ?, ?, ?)', data)  
+            self.conn.execute('INSERT INTO planes (id, name, type_plane) VALUES (?, ?, ?)', data)  
+        
+        
+    def truncate(self):
+        with self.conn:
+            self.conn.execute('DELETE FROM planes')
            
             
     def select_all(self):
         with self.conn:
             rows = self.conn.execute("SELECT * FROM planes").fetchall() 
               
-        return rows      
-                 
+        return rows
+                   
         
     def get_columns(self):
         with self.conn:
