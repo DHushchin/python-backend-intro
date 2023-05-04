@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Музей авіації України{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1><a href="{{ url_for('index') }}">Музей авіації України</a></h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('aircraft') }}">Товари та послуги</a></li>
+                <li><a href="{{ url_for('price') }}">Прайс-лист</a></li>
+                <li><a href="{{ url_for('contacts') }}">Контакти</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; Музей авіації України, 2023</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Музей авіації України</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  </head>
+  <body>
+    <header>
+      <h1>Музей авіації України</h1>
+      <nav>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Головна</a></li>
+          <li><a href="{{ url_for('aircraft') }}">Товари та послуги</a></li>
+          <li><a href="{{ url_for('price') }}">Прайс-лист</a></li>
+          <li><a href="{{ url_for('contacts') }}">Контакти</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <h2>Ласкаво просимо до Музею авіації України!</h2>
+      <p>Тут ви зможете дізнатися більше про типи та період випуску і експлуатації літаків, які використовувалися в Україні та світі. Також у нас можна оглянути різноманітні моделі та експонати з авіаційної історії.</p>
+    </main>
+  </body>
+</html>
