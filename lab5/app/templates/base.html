@@ -1,0 +1,28 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <title>{% block title %}Музей авіації України{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <li><a href="{% url 'index' %}">Музей авіації України</a></li>
+        <nav>
+            <ul>
+                <li><a href="{% url 'aircraft' %}">Товари та послуги</a></li>
+                <li><a href="{% url 'price' %}">Прайс-лист</a></li>
+                <li><a href="{% url 'contacts' %}">Контакти</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; Музей авіації України, 2023</p>
+    </footer>
+</body>
+</html>
