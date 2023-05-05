@@ -34,3 +34,11 @@ pip install -r requirements.txt
 ```bash
 python ./src/menu.py
 ```
+
+## Running lab5
+
+```bash
+cd lab5
+pip install -r requirements.txt
+python manage.py runserver
+```
